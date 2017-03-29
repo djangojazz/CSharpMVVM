@@ -3,9 +3,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Linq;       
+using System.Linq;
 using System.Windows;
-using System.Windows.Controls;  
+using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
@@ -34,18 +34,18 @@ namespace CSharpControls.Charting
     {
       get => PART_CanvasBorder.ActualHeight / PART_CanvasBorder.ActualWidth;
     }
-                                                                            
+
     private double SegmentLength
     {
       get => _viewWidth / _xNumberOfTicks;
     }
-                     
+
     public BarChart()
     {
       InitializeComponent();
       Part_Layout.DataContext = this;
     }
-           
+
     #region "DataChangedAndTimingEvents"
     public override void OnTick(object o, EventArgs e)
     {
@@ -74,7 +74,7 @@ namespace CSharpControls.Charting
       _explicitTicks = ChartData.SelectMany(x => x.Points).Select(x => x.XAsDouble).Distinct().OrderBy(x => x).ToList();
       _xNumberOfTicks = _explicitTicks.Count();
     }
-              
+
     private void SetupHeightAndWidthsOfObjects()
     {
       PART_CanvasYAxisLabels.Height = _viewHeight;
@@ -140,6 +140,10 @@ namespace CSharpControls.Charting
 
       if (ChartData.Count > 1)
       {
+        PART_CanvasPoints.LayoutTransform = new ScaleTransform(1, -1);
+        PART_CanvasPoints.UpdateLayout();
+        ResetTicksForSpecificDateRange();
+
         //Uniformity check of X and Y types.  EG: You cannot have a DateTime and a Number for different X axis or Y axis sets.
         if (ChartData.ToList().Select(x => x.Points[0].X.GetType()).Distinct().GroupBy(x => x).Count() > 1 || ChartData.ToList().Select(x => x.Points[0].Y.GetType()).Distinct().GroupBy(x => x).Count() > 1)
         {
@@ -170,7 +174,7 @@ namespace CSharpControls.Charting
         if (_xNumberOfTicks == 0)
         {
           //want at the very least to see a beginning and an end and redraw to show this.
-          _xNumberOfTicks = 1;                                                                           
+          _xNumberOfTicks = 1;
         }
       }
 
@@ -179,7 +183,7 @@ namespace CSharpControls.Charting
     }
     #endregion
 
-#region "Drawing Methods"
+    #region "Drawing Methods"
 
     protected override void DrawXAxis(Canvas partCanvasXTicks, Canvas partCanvasXLabels, double xCeiling, double xFloor, int xTicks, double viewWidth, double labelHeight)
     {
@@ -228,7 +232,7 @@ namespace CSharpControls.Charting
         fontSize = 8;
         spacing = (int)(spacingForText * 0.3);
       }
-        
+
       for (int i = 0; i <= xTicks - 1; i++)
       {
         var segment = GetSegment(i);
@@ -275,7 +279,8 @@ namespace CSharpControls.Charting
 
     private void DrawTrendsFromDate(double xSegmentValue, double widthOfBar, double yFactor, int segmentIndex)
     {
-      ChartData.SelectMany(x => x.Points).Where(x => x.XAsDouble == xSegmentValue).Select((pnt, ind) => new {
+      ChartData.SelectMany(x => x.Points).Where(x => x.XAsDouble == xSegmentValue).Select((pnt, ind) => new
+      {
         YAsDouble = pnt.YAsDouble,
         XAsDouble = pnt.XAsDouble,
         Index = ind
@@ -306,7 +311,7 @@ namespace CSharpControls.Charting
     {
       return (index * SegmentLength) + (SegmentLength / 2);
     }
-                                                           
+
     private void ClearCanvasOfAllData()
     {
       PART_CanvasPoints.Children.Clear();

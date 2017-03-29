@@ -16,9 +16,7 @@ using System.Windows.Media;
 namespace Main
 {
   public class MainViewModel : BaseViewModel
-  {
-
-
+  {                        
     private List<PlotPoints> _lastPoints = new List<PlotPoints>();
     private int _countsTest;
     private bool _loaded = false;
