@@ -56,7 +56,11 @@
     </ApplicationDefinition>
     <Compile Include="Business\TrendChoices.cs" />
     <Compile Include="ViewModel\BaseViewModel.cs" />
+    <Compile Include="ViewModel\CollectionChangedBubbleUpViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
+    <Compile Include="View\CollectionChangedBulbbleUp.xaml.cs">
+      <DependentUpon>CollectionChangedBulbbleUp.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\TestView.xaml.cs">
       <DependentUpon>TestView.xaml</DependentUpon>
     </Compile>
@@ -72,6 +76,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="View\CollectionChangedBulbbleUp.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\TestView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -112,6 +120,10 @@
     <ProjectReference Include="..\CSharpDataAccess\CSharpDataAccess.csproj">
       <Project>{35F15E72-34FC-4BD9-A9B5-9920DDE2C24E}</Project>
       <Name>CSharpDataAccess</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FakeRepo\FakeRepo.csproj">
+      <Project>{84bb8e8b-8208-4668-9f7e-e7401fd2aca1}</Project>
+      <Name>FakeRepo</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
