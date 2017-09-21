@@ -9,12 +9,14 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace Main
 {
   public class MainViewModel : BaseViewModel
-  {                        
+  {
+    private RelayCommand _testCommand;
     private List<PlotPoints> _lastPoints = new List<PlotPoints>();
     
     public MainViewModel()
@@ -84,24 +86,18 @@ namespace Main
     }
     #endregion
     #endregion
-
-    #region Commands
     
-
-    public DelegateCommand<string> TestCommand { get; }
+    public ICommand TestCommand { get => (_testCommand == null) ? _testCommand = new RelayCommand(param => LinePlotAdding()) : _testCommand; }
     
-    #endregion
-
     #region Methods
 
     #region "Line Graph parts"
-  
+
     private void AddingLinesForLineChart()
     {
       _lastPoints = new List<PlotPoints>{
       new PlotPoints(new PlotPoint<DateTime>(new DateTime(2017, 2, 12)), new PlotPoint<double>(1200)),
-      new PlotPoints(new PlotPoint<DateTime>(new DateTime(2017, 2, 12)), new PlotPoint<double>(1200)),
-      new PlotPoints(new PlotPoint<DateTime>(new DateTime(2017, 2, 10)), new PlotPoint<double>(950))
+      new PlotPoints(new PlotPoint<DateTime>(new DateTime(2017, 2, 12)), new PlotPoint<double>(1200))
       };
 
       var o = new ObservableCollection<PlotPoints>{
@@ -115,23 +111,10 @@ namespace Main
       new PlotPoints(new PlotPoint<DateTime>(new DateTime(2017, 2, 11)), new PlotPoint<double>(720)),
       _lastPoints[1]
       };
-
-      var o3 = new List<PlotPoints>{
-      new PlotPoints(new PlotPoint<DateTime>(new DateTime(2017, 2, 1)), new PlotPoint<double>(300)),
-      new PlotPoints(new PlotPoint<DateTime>(new DateTime(2017, 2, 5)), new PlotPoint<double>(1720)),
-      new PlotPoints(new PlotPoint<DateTime>(new DateTime(2017, 2, 7)), new PlotPoint<double>(420)),
-      new PlotPoints(new PlotPoint<DateTime>(new DateTime(2017, 2, 8)), new PlotPoint<double>(920)),
-      _lastPoints[2]
-      };
-
-      var o4 = new List<PlotPoints> { new PlotPoints(new PlotPoint<DateTime>(new DateTime(2017, 2, 5)), new PlotPoint<double>(1920)) };
-      var o5 = new List<PlotPoints> { new PlotPoints(new PlotPoint<DateTime>(new DateTime(2017, 2, 5)), new PlotPoint<double>(2920)) };
-
+      
       ChartData.ClearAndAddRange(new List<PlotTrend>{
         new PlotTrend("First", Brushes.Blue, new Thickness(2), o),
-        new PlotTrend("Second", Brushes.Red, new Thickness(2), o2),
-        new PlotTrend("Third", Brushes.Purple, new Thickness(2), o3),
-        new PlotTrend("Fourth", Brushes.Brown, new Thickness(2), o4)
+        new PlotTrend("Second", Brushes.Red, new Thickness(2), o2)
       });
 
       var distinctCounts = (ChartData.SelectMany(x => x.Points).Select(x => x.XAsDouble).Distinct().Count() - 1);
@@ -154,6 +137,11 @@ namespace Main
 
       dynamic distinctCounts = (ChartData.SelectMany(x => x.Points).Select(x => x.XAsDouble).Distinct().Count() - 1);
       XTicks = distinctCounts > 0 ? distinctCounts : 1;
+
+      ChartData.ClearAndAddRange(new List<PlotTrend>{
+        new PlotTrend("First", Brushes.Blue, new Thickness(2), ChartData[0].Points),
+        new PlotTrend("Second", Brushes.Red, new Thickness(2), ChartData[1].Points)
+      });
     }
 
     #endregion

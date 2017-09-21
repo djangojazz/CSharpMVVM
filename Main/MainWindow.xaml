@@ -37,7 +37,7 @@
       />
     <StackPanel Grid.Row="3"  Orientation="Horizontal">
       <TextBlock Text="{Binding XTicks}" Height="30" Width="100" />
-      <Button Command="{Binding TestCommand}" Height="30" Width="100" Content="Try It" />
+      <Button Command="{Binding TestCommand}" Height="30" Width="200" Content="Add point Series to chart" />
     </StackPanel>
 
   </Grid>
