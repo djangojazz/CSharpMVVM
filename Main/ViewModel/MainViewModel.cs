@@ -3,8 +3,6 @@ using CSharpControls.Business;
 using CSharpControls.Charting;
 using CSharpControls.Converters.Instances;
 using CSharpControls.Types;
-using CSharpDataAccess.Enterprise;
-using CSharpDataAccess.Enterprise.Models;
 using Main.Business;
 using System;
 using System.Collections.Generic;
@@ -18,57 +16,21 @@ namespace Main
   public class MainViewModel : BaseViewModel
   {                        
     private List<PlotPoints> _lastPoints = new List<PlotPoints>();
-    private int _countsTest;
-    private bool _loaded = false;
-
+    
     public MainViewModel()
     {
-      InstanceConverter = new InstanceInSetToStringConverter();
-      LocationCollection = new ObservableCollectionContentNotifying<DemandLocation>();
-      ChartData = new ObservableCollectionContentNotifying<PlotTrend>();
-
-      LocationCollection.ClearAndAddRange(Selects.GetDemandLocations().Take(5));
-      var locs = new List<int> { 18, 55 };
-      locs.ForEach(x => LocationCollection.Single(y => y.LocationID == x).IsUsed = true);
-      UpdateHeader();
-      SelectedItem = TrendChoices.FiscalPeriod;
-      UpdateChartData();
-      LocationCollection.OnCollectionItemChanged += UpdateHeader;
+      AddingLinesForLineChart();
     }
 
     #region Properties
-    public List<int> SelectedLocations
-    {
-      get => LocationCollection.Any() ? LocationCollection.Where(x => x.IsUsed == true).Select(x => x.LocationID).ToList() : null;
-    }
-
     public TrendChoices[] Array
     {
       get => (TrendChoices[])Enum.GetValues(typeof(TrendChoices));
     }
 
     public InstanceInSetToStringConverter InstanceConverter { get; }
-    public ObservableCollectionContentNotifying<PlotTrend> ChartData { get; }
-    public ObservableCollectionContentNotifying<DemandLocation> LocationCollection { get; }
-
-    #region Open
-    private bool _open;
-    public bool Open
-    {
-      get { return _open; }
-      set
-      {
-        _open = value;
-        if (_loaded & !Open)
-        { 
-          UpdateHeader();
-        }
-        OnPropertyChanged(nameof(Open));
-        _loaded = true;
-      }
-    }
-    #endregion
-
+    public ObservableCollectionContentNotifying<PlotTrend> ChartData { get; } = new ObservableCollectionContentNotifying<PlotTrend>();
+    
     #region TestText
     private string _testText;
     public string TestText
@@ -94,34 +56,7 @@ namespace Main
       }
     }
     #endregion
-
-    #region SelectedItem
-    private TrendChoices _selectedItem;
-    public TrendChoices SelectedItem
-    {
-      get { return _selectedItem; }
-      set
-      {
-        _selectedItem = value;
-        OnPropertyChanged(nameof(SelectedItem));
-        UpdateChartData();
-      }
-    }
-    #endregion
-
-    #region SelectedLocation
-    private DemandLocation _selectedLocation;
-    public DemandLocation SelectedLocation
-    {
-      get { return _selectedLocation; }
-      set
-      {
-        _selectedLocation = value;
-        OnPropertyChanged(nameof(SelectedLocation));
-      }
-    }
-    #endregion
-
+    
     #region XTicks
     private int _xTicks;
     public int XTicks
@@ -151,56 +86,16 @@ namespace Main
     #endregion
 
     #region Commands
-    public DelegateCommand<DemandLocation> CommandSelectedLocation { get; }
-
-    private void CommandSelectedLocationExecute(DemandLocation obj)
-    {
-      SelectedLocation = obj;
-    }
+    
 
     public DelegateCommand<string> TestCommand { get; }
-
-    private void TestCommandExecute(string input)
-    {
-      LocationCollection.ClearAndAddRange(Selects.GetDemandLocations().Take(10));
-    }
+    
     #endregion
 
     #region Methods
-    private void UpdateHeader(object sender, ObservableCollectionContentChangedArgs e)
-    {
-      UpdateHeader();
-    }
-
-    private void UpdateHeader()
-    {
-      var itemsSelected = LocationCollection.Where(x => x.IsUsed == true).Select(x => x.ToString());
-      var headerUpdated = itemsSelected.Any() ? string.Join(", ", itemsSelected) : "No Items";
-      LocationHeader = headerUpdated;
-    }
 
     #region "Line Graph parts"
-    public void UpdateChartData()
-    {
-      var input = new DemandTrendInput(2278, new DateTime(2017, 2, 25), new DateTime(2017, 5, 1), SelectedItem.ToString(), new List<int> { 2, 25 });
-      var serializedInput = input.SerializeToXml();
-
-      var demands = Selects.GetDemandTrends(serializedInput);
-
-      var demand = demands.Select(x => new PlotPoints(new PlotPoint<double>(x.Grouping), new PlotPoint<decimal>(x.DemandQty)));
-      var ad = demands.Select(x => new PlotPoints(new PlotPoint<double>(x.Grouping), new PlotPoint<decimal>(x.DemandAdQty)));
-
-      if (InstanceConverter != null)
-      {
-        XTicks = demands.Count > 0 ? demands.Count - 1 : 1;
-        InstanceConverter.OptionalHeader = SelectedItem.ToString();
-        InstanceConverter.FirstPosition = demands.Select(x => x.Grouping).First();
-
-        ChartData.ClearAndAddRange(new List<PlotTrend> { new PlotTrend("Demand", Brushes.Blue, new Thickness(2), demand), new PlotTrend("Ad", Brushes.Red, new Thickness(2), ad) });
-      }
-    }
-
-
+  
     private void AddingLinesForLineChart()
     {
       _lastPoints = new List<PlotPoints>{

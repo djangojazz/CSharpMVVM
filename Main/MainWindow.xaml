@@ -23,12 +23,6 @@
       <RowDefinition Height="*" />
       <RowDefinition Height="Auto" />
     </Grid.RowDefinitions>
-    <ComboBox ItemsSource="{Binding Array}" SelectedItem="{Binding SelectedItem}" />
-    <cntrls:MultiCheckBoxPopup Grid.Row="1" ItemsCollection="{Binding LocationCollection}" 
-                               Header="{Binding LocationHeader}"
-                               ScrollingHeight="300"
-                               IsMultiCheckBoxOpen="{Binding Open, Mode=OneWayToSource}"
-                               />
     <charting:BarChart Grid.Row="2"
       ChartData="{Binding ChartData}"
       ChartTitle="Test Line Chart"
@@ -37,12 +31,10 @@
       BackGroundColorCanvas="White" 
       BackGroundColorLegend="White"    
       YNumberOfTicks="3"
-      XValueConverter="{Binding InstanceConverter}"
+      XValueConverter="{x:Static conv:Converters.DateFormatConverter}"
       YValueConverter="{x:Static conv:Converters.DecimalConverter}"
       FontType="Tahoma"
       />
-    <!--YValueConverter="{x:Static cntrls:Converters.DecimalConverter}"-->
-    <!--XNumberOfTicks="{Binding XTicks}"-->
     <StackPanel Grid.Row="3"  Orientation="Horizontal">
       <TextBlock Text="{Binding XTicks}" Height="30" Width="100" />
       <Button Command="{Binding TestCommand}" Height="30" Width="100" Content="Try It" />

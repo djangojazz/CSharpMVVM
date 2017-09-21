@@ -7,12 +7,11 @@ namespace CSharpControls.Converters.Instances
 {
   public sealed class DateFormatConverter : Control, IValueConverter
   {
-
-    public string DateFormat { get; set; }
+    public string DateFormat { get; set; } = "MM/dd/yyyy";
 
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-      var dt = (DateTime)value;
+      var dt = new DateTime((long)(double)value);
 
       return dt.ToString(DateFormat);
     }

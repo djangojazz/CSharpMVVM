@@ -42,11 +42,6 @@
   <ItemGroup>
     <Compile Include="DatabaseAccess.cs" />
     <Compile Include="DataConverter.cs" />
-    <Compile Include="Enterprise\Models\DemandLocation.cs" />
-    <Compile Include="Enterprise\Models\DemandLocationDb.cs" />
-    <Compile Include="Enterprise\Models\DemandTrendInput.cs" />
-    <Compile Include="Enterprise\Models\DemandTrendOutput.cs" />
-    <Compile Include="Enterprise\Selects.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
